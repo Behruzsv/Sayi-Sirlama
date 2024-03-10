@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .inputBoyutu {
+        width: 70px;
+        padding: 2px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sayısal Loto Oyunu</h1>
+    <label>Aşağıdaki inputlara tahminlerini giriniz:</label><br /><br />
+
+    <div>
+      <input
+        type="number"
+        id="input1"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <input
+        type="number"
+        id="input2"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <input
+        type="number"
+        id="input3"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <input
+        type="number"
+        id="input4"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <input
+        type="number"
+        id="input5"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <input
+        type="number"
+        id="input6"
+        class="inputBoyutu"
+        onblur="checkDuplicate(this)"
+      />
+      <button id="tahminButton" onclick="tahminGir()">Tahmin Gir</button>
+    </div>
+
+    <div>
+      <label id="tahminGirildi"></label>
+    </div>
+
+    <br />
+    <hr />
+
+    <button id="kuraButton" onclick="kuraCek()" disabled>Kura Çek</button>
+    <br /><br />
+    <label>Loto Sayıları</label>
+    <br /><br />
+
+    <div class="KuraSonucu">
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi1"
+        class="size"
+        disabled
+      />
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi2"
+        class="size"
+        disabled
+      />
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi3"
+        class="size"
+        disabled
+      />
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi4"
+        class="size"
+        disabled
+      />
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi5"
+        class="size"
+        disabled
+      />
+      <input
+        type="number"
+        class="inputBoyutu"
+        id="lotoSayi6"
+        class="size"
+        disabled
+      />
+    </div>
+
+    <div>
+      <label id="eslesenSayilar"></label>
+    </div>
+    <div>
+      <label id="bilinen"></label>
+    </div>
+
+    <script>
+      var tahminler = [];
+
+      function checkDuplicate(input) {
+        var value = input.value;
+        if (tahminler.includes(value)) {
+          alert("Aynı tahmin bir kez girilebilir.");
+          input.value = "";
+        } else {
+          tahminler.push(value);
+        }
+      }
+
+      function tahminGir() {
+        var inputs = [
+          document.getElementById("input1"),
+          document.getElementById("input2"),
+          document.getElementById("input3"),
+          document.getElementById("input4"),
+          document.getElementById("input5"),
+          document.getElementById("input6"),
+        ];
+        var tahminButton = document.getElementById("tahminButton");
+        var kuraButton = document.getElementById("kuraButton");
+        var valid = true;
+        tahminler = [];
+
+        for (var i = 0; i < inputs.length; i++) {
+          var value = parseInt(inputs[i].value);
+          if (isNaN(value) || value < 1 || value > 49) {
+            valid = false;
+            break;
+          }
+          tahminler.push(value);
+        }
+
+        if (!valid) {
+          alert("1-49 sayıları arasında bir sayı girmelisiniz.");
+          return;
+        }
+
+        tahminler.sort(function (a, b) {
+          return a - b;
+        });
+
+        for (var i = 1; i <= 6; i++) {
+          var tahminInput = document.getElementById("input" + i);
+          tahminInput.value = tahminler[i - 1];
+        }
+
+        var tahminGirildi = document.getElementById("tahminGirildi");
+        tahminGirildi.textContent = "Tahmin Girildi";
+
+        tahminButton.disabled = true;
+        kuraButton.disabled = false;
+      }
+
+      function kuraCek() {
+        var kuraButton = document.getElementById("kuraButton");
+        var lotoSayilar = [];
+
+        while (lotoSayilar.length < 6) {
+          var random = Math.floor(Math.random() * 49) + 1;
+          if (!lotoSayilar.includes(random)) {
+            lotoSayilar.push(random);
+          }
+        }
+
+        lotoSayilar.sort(function (a, b) {
+          return a - b;
+        });
+
+        for (var i = 1; i <= 6; i++) {
+          var lotoInput = document.getElementById("lotoSayi" + i);
+          lotoInput.value = lotoSayilar[i - 1];
+        }
+
+        var eslesenSayilar = [];
+        for (var i = 1; i <= 6; i++) {
+          var input = document.getElementById("input" + i);
+          var value = parseInt(input.value);
+          if (lotoSayilar.includes(value)) {
+            eslesenSayilar.push(value);
+          }
+        }
+
+        var eslesenSayilarElement = document.getElementById("eslesenSayilar");
+        eslesenSayilarElement.textContent =
+          "Bilinen Sayılar: " + eslesenSayilar.join(", ");
+        var bilinenElement = document.getElementById("bilinen");
+        bilinenElement.textContent =
+          eslesenSayilar.length + " adet sayı bildiniz.";
+
+        kuraButton.disabled = true;
+      }
+    </script>
+  </body>
+</html>
